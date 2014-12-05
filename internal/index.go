@@ -29,6 +29,9 @@ func (i *Index) readin() {
 		log.Fatal(err)
 	}
 	for _, e := range strings.Split(string(contents), "\n") {
+        if len(e) == 0 {
+            continue
+        }
 		i.entries[filepath.Base(e)] = e
 	}
 }
