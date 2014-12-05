@@ -5,7 +5,6 @@ import (
 	"crypto/sha512"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -157,31 +156,24 @@ func MoveFile(srcpath, curdir string) {
 	}
 }
 
-func UpdateIndex(srcpath, homedir, curdir string) {
-	index, err := os.OpenFile(filepath.Join(curdir, "INDEX"), os.O_APPEND|os.O_RDWR|os.O_CREATE, 0666)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer index.Close()
-	contents, err := ioutil.ReadAll(index)
+func striphome(srcpath, homedir string) string {
 	if strings.HasPrefix(srcpath, homedir+string(os.PathSeparator)) == false {
 		log.Fatal("Src does not have HOME inside of it")
 	}
 	srcpath = srcpath[len(homedir)+1:]
-	if bytes.Contains(contents, []byte(srcpath+"\n")) == false {
-		_, err := index.WriteString(srcpath + "\n")
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-
+	return srcpath
 }
 
 // Copy each file into the current direction.
 func OverWrite(in []string, homedir, curdir string) {
+	i, err := OpenIndex(curdir)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer i.Close()
 	for _, srcpath := range in {
 		MoveFile(srcpath, curdir)
-		UpdateIndex(srcpath, homedir, curdir)
+		i.Update(striphome(srcpath, homedir))
 	}
 }
 

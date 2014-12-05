@@ -21,7 +21,6 @@ func main() {
 	flag.Parse()
 	switch flag.Arg(0) {
 	case "install":
-		log.Println("install")
 		internal.Install(curdir, homedir)
 	case "save":
 		internal.Save(homedir, curdir)
