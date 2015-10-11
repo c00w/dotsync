@@ -26,6 +26,9 @@ func (c *collator) Walker(path string, info os.FileInfo, err error) error {
 		*c = append(*c, path)
 		return nil
 	}
+	if strings.HasSuffix(info.Name(), "service") {
+		*c = append(*c, path)
+	}
 	if strings.HasSuffix(info.Name(), "rc") {
 		*c = append(*c, path)
 	}
