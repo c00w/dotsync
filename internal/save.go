@@ -141,8 +141,7 @@ func PromptFilter(in []string) []string {
 	return out
 }
 
-func MoveFile(srcpath, curdir string) {
-	dstpath := filepath.Join(curdir, filepath.Base(srcpath))
+func MoveFile(srcpath, dstpath string) {
 	dstfd, err := os.Create(dstpath)
 	if err != nil {
 		log.Fatal(err)
@@ -175,7 +174,8 @@ func OverWrite(in []string, homedir, curdir string) {
 	}
 	defer i.Close()
 	for _, srcpath := range in {
-		MoveFile(srcpath, curdir)
+		destpath := filepath.Join(curdir, filepath.Base(srcpath))
+		MoveFile(srcpath, destpath)
 		i.Update(striphome(srcpath, homedir))
 	}
 }

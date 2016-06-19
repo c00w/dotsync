@@ -29,9 +29,9 @@ func (i *Index) readin() {
 		log.Fatal(err)
 	}
 	for _, e := range strings.Split(string(contents), "\n") {
-        if len(e) == 0 {
-            continue
-        }
+		if len(e) == 0 {
+			continue
+		}
 		i.entries[filepath.Base(e)] = e
 	}
 }
@@ -48,6 +48,15 @@ func (i *Index) write() {
 		}
 	}
 }
+
+func (i *Index) ListFiles() []string {
+	names := make([]string, 0, len(i.entries))
+	for name, _ := range i.entries {
+		names = append(names, name)
+	}
+	return names
+}
+
 func (i *Index) Close() {
 	i.fd.Close()
 }
